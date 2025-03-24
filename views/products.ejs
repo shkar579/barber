@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بەرهەمەکان</title>
+    <!-- custom css link -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/users.css">
+    <!-- font awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <%- include("./include/header.ejs") %>
+        <div class="container">
+            <h1>بەرهەمەکان</h1>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="فلتەرکردن">
+                <button id="exportBtn">گواستنەوە بۆ فایلی ئێکسڵ</button>
+                <button id="deleteSelectedBtn">سڕینەوە</button>
+                <button id="addRowBtn">زیادکردن</button>
+                <a id="categoryBtn"
+                    style="text-decoration: none;color: var(--light);background-color: var(--accent); padding: 12px;border-radius: 10px;"
+                    href="/admin/category">جۆرەکان</a>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>ئایدی</th>
+                        <th>ناونیشان</th>
+                        <th>نرخی کڕین</th>
+                        <th>نرخ</th>
+                        <th>وێنە</th>
+                        <th>جۆر</th>
+                        <th>بەردەست</th>
+                        <th>بەرواری بەسەرچوون</th>
+                        <th>ناسراو</th>
+                        <th>نوێ</th>
+                        <th>بەرواری زیادکراو</th>
+                        <th>کردار</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% products.forEach(product=> { %>
+                        <tr>
+                            <td><input type="checkbox" class="selectRow" data-id="<%= product.id %>"></td>
+                            <td>
+                                <%= product.id %>
+                            </td>
+                            <td>
+                                <%= product.title %>
+                            </td>
+                            <td>
+                                <%= product.cost %>
+                            </td>
+                            <td>
+                                <%= product.price %>
+                            </td>
+                            <td>
+                                <% if(product.image) { %>
+                                    <img src="<%= product.image %>" alt="<%= product.title %>" width="50">
+                                    <% } else { %>
+                                        <span>بێ وێنە</span>
+                                        <% } %>
+                            </td>
+                            <td>
+                                <%= product.category_name %>
+                            </td>
+                            <td>
+                                <%= product.stock %>
+                            </td>
+                            <td>
+                                <%= product.expiry_date %>
+                            </td>
+                            <td>
+                                <%= product.popular ? 'بەڵێ' : 'نەخێر' %>
+                            </td>
+                            <td>
+                                <%= product.is_new ? 'بەڵێ' : 'نەخێر' %>
+                            </td>
+                            <td>
+                                <%= product.date_added %>
+                            </td>
+                            <td>
+                                <button class="editBtn" data-id="<%= product.id %>">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                </button>
+                                <button class="viewBtn" data-id="<%= product.id %>">
+                                    <i class="fa-solid fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button id="prevPage">پێشتر</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">دواتر</button>
+            </div>
+        </div>
+
+        <!-- Modal for Add/Edit Product -->
+        <div id="rowFormModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle">زیادکردنی بەرهەم</h2>
+                <form id="rowForm" enctype="multipart/form-data">
+                    <input type="hidden" id="productId" name="productId" />
+                    <div>
+                        <label for="title">ناو</label>
+                        <input type="text" id="title" name="title" required />
+                    </div>
+                    <div>
+                        <label for="price">نرخی کڕین</label>
+                        <input type="number" id="cost" name="cost" step="0.01" min="0" required />
+                    </div>
+                    <div>
+                        <label for="price">نرخ</label>
+                        <input type="number" id="price" name="price" step="0.01" min="0" required />
+                    </div>
+                    <div>
+                        <label for="description">وەسف</label>
+                        <textarea id="description" name="description" placeholder="وەسفی بەرهەم"></textarea>
+                    </div>
+                    <div>
+                        <label for="image">وێنە</label>
+                        <input type="file" id="image" name="image" accept="image/*" />
+                    </div>
+                    <div>
+                        <label for="category">جۆر</label>
+                        <select id="category" name="category_id" required>
+                            <option value="" disabled selected>جۆرێک هەڵبژێرە</option>
+                            <% categories.forEach(category=> { %>
+                                <option value="<%= category.category_id %>">
+                                    <%= category.category_name %>
+                                </option>
+                                <% }) %>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="stock">بەردەست</label>
+                        <input type="number" id="stock" name="stock" min="0" value="0" />
+                    </div>
+                    <div>
+                        <label for="expiry_date">بەرواری بەسەرچوون</label>
+                        <input type="date" id="expiry_date" name="expiry_date" />
+                    </div>
+                    <div>
+                        <label for="popular">ناسراو</label>
+                        <select id="popular" name="popular">
+                            <option value="0">نەخێر</option>
+                            <option value="1">بەڵێ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="is_new">نوێ</label>
+                        <select id="is_new" name="is_new">
+                            <option value="0">نەخێر</option>
+                            <option value="1">بەڵێ</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="date_added">بەرواری زیادکردن</label>
+                        <input type="date" id="date_added" name="date_added"
+                            value="<%= new Date().toISOString().split('T')[0] %>" />
+                    </div>
+                    <button type="submit" id="saveBtn">پاراستن</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- View Product Details Modal -->
+        <div id="viewProductModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2>وردەکاری بەرهەم</h2>
+                <div id="productDetails">
+                    <!-- Product details will be dynamically populated -->
+                </div>
+            </div>
+        </div>
+
+        <!-- custom js link -->
+        <script src="/js/time.js"></script>
+        <script src="/js/products.js"></script>
+</body>
+
+</html>

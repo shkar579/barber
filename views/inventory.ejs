@@ -1,0 +1,113 @@
+<%- include('partials/head') %>
+    <%- include('partials/header') %>
+
+        <div class="container">
+            <h1 style="color: #72A07E; border-color: #72A07E;">بەڕێوبردنی کۆگا</h1>
+
+            <% if (error) { %>
+                <div class="alert alert-danger">
+                    <%= error %>
+                </div>
+                <% } %>
+
+                    <!-- Create Inventory Item Form -->
+                    <div class="card mb-4">
+                        <!-- <div class="card-header"></div> -->
+                        <!-- <a class="btn btn-danger p-2" href="/purchases">کڕین</a> -->
+                        <div class="card-body">
+                            <form id="createInventoryForm" action="/inventory/create" method="POST">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <select name="productId" class="form-control" required>
+                                            <option value="">بەرهەمێک هەڵبژێرە</option>
+                                            <% products.forEach(function(product) { %>
+                                                <option value="<%= product.id %>">
+                                                    <%= product.title %>
+                                                </option>
+                                                <% }); %>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="number" name="quantity" class="form-control" placeholder="بڕ"
+                                            required>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <input type="text" name="location" class="form-control" placeholder="ناونیشان">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button style="background-color: #72A07E;border: none;" type="submit"
+                                            class="btn btn-primary">زیادکردن</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Search and Filter -->
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <input type="text" id="productSearchInput" class="form-control"
+                                placeholder="گەڕان بەپێی بەرهەم">
+                        </div>
+                    </div>
+
+
+                    <!-- Inventory Table -->
+                    <table class="table table-striped" id="inventoryTable">
+                        <thead style="background-color: #72A07E;">
+                            <tr>
+                                <th>ئایدی</th>
+                                <th>بەرهەم</th>
+                                <th>بڕ</th>
+                                <th>ناونیشان</th>
+                                <th>کۆتا نوێکردنەوە</th>
+                                <th>کردار</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% inventoryItems.forEach(function(item) { %>
+                                <tr>
+                                    <td>
+                                        <%= item.inventory_id %>
+                                    </td>
+                                    <td>
+                                        <%= item.product_name %>
+                                    </td>
+                                    <td>
+                                        <%= item.quantity %>
+                                    </td>
+                                    <td>
+                                        <%= item.location || 'N/A' %>
+                                    </td>
+                                    <td>
+                                        <%= item.last_updated %>
+                                    </td>
+                                    <td>
+                                        <button style="display: none;" class="btn btn-sm btn-warning edit-btn"
+                                            data-id="<%= item.inventory_id %>" data-product="<%= item.product_id %>"
+                                            data-quantity="<%= item.quantity %>" data-location="<%= item.location %>">
+                                            Edit
+                                        </button>
+                                        <form action="/inventory/delete" method="POST" style="display:inline;"
+                                            onsubmit="return confirm('Are you sure you want to delete this item?');">
+                                            <input type="hidden" name="inventoryId" value="<%= item.inventory_id %>">
+                                            <button type="submit" style="display: none;"
+                                                class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                <% }); %>
+                        </tbody>
+                    </table>
+        </div>
+
+        <!-- Edit Modal (remains the same as before) -->
+        <div class="modal fade" id="editModal" tabindex="-1">
+            <!-- ... (previous modal code remains unchanged) ... -->
+        </div>
+
+        <%- include('partials/footer') %>
+
+            <script src="/js/inventory.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>

@@ -1,0 +1,62 @@
+<form id="serviceForm">
+    <div class="name-group">
+        <label for="barber_name">دەلاک</label>
+        <input type="hidden" name="id" value="<%= service[0].id %>">
+        <select name="barber_name" id="barber_name">
+            <% barbers.forEach(row=>{ %>
+                <option value="<%= row.Id %>">
+                    <%= row.Firstname %>
+                        <%= row.Lastname %>
+                </option>
+                <% }) %>
+        </select>
+    </div>
+
+
+
+    <div id="servicesList" class="servicesList">
+        <% services.forEach(row=>{ %>
+
+            <div>
+                <%= row.Price %> - <%= row.Service %>
+                        <input type="checkbox" class="serviceCheckbox" data-price="<%= row.Price %>"
+                            value="<%= row.Id %>" name="services" />
+            </div>
+
+            <% }) %>
+
+    </div>
+
+    <input id="customerPayment" type="number" value="<%= service[0].money_received %>" min="0" placeholder="وەرگرتن">
+
+    <div class="income">
+        <div class="info">
+            <label>کۆی گشتی:</label>
+            <span id="totalPrice">
+                <%= service[0].total_price %>
+            </span>
+        </div>
+        <div class="info">
+            <label>پارەی وەرگیراو:</label>
+            <span id="moneyRceived">
+                <%= service[0].money_received %>
+            </span>
+        </div>
+
+        <div class="info">
+            <label>داهاتی وەستا:</label>
+            <span id="barberIncome">
+                <%= service[0].barber_income %>
+            </span>
+        </div>
+
+        <div class="info">
+            <span id="employerIncome">
+                <%= service[0].employer_income %>
+            </span>
+            <label>:Adam style</label>
+        </div>
+    </div>
+
+    <button>زیادکردن</button>
+</form>

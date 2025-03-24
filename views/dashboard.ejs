@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>داشبۆرد</title>
+    <!-- custom css link -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <!-- font awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <%- include("./include/header.ejs") %>
+        <section>
+            <div class="main">
+                <a href="/sales-report" class="box">
+                    <i class="fa-solid fa-file"></i>
+                    <h3>ڕاپۆرتەکان</h3>
+                </a>
+
+                <a href="/admin/barbers" class="box">
+                    <i class="fa-solid fa-user-tie"></i>
+                    <h3>دەلاکەکان</h3>
+                </a>
+
+                <a href="/admin/expenses" class="box">
+                    <i class="fa-solid fa-wallet"></i>
+                    <h3>خەرجیەکان</h3>
+                </a>
+
+                <a href="/admin/users" class="box">
+                    <i class="fa-solid fa-user"></i>
+                    <h3>بەکارهێنەرەکان</h3>
+                </a>
+
+                <a href="/admin/wallet" class="box">
+                    <i class="fa-solid fa-sack-dollar"></i>
+                    <h3>قاسە</h3>
+                </a>
+
+                <a href="/admin/services" class="box">
+                    <i class="fa-solid fa-scissors"></i>
+                    <h3>خزمەتگوزاریەکان</h3>
+                </a>
+                <a href="/admin/sales" class="box">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>فرۆشتن</h3>
+                </a>
+                <a href="/admin/products" class="box">
+                    <i class="fas fa-box"></i>
+                    <h3>بەرهەمەکان</h3>
+                </a>
+                <a href="/inventory" class="box">
+                    <i class="fa-solid fa-warehouse"></i>
+                    <h3>کۆگا</h3>
+                </a>
+                <!-- <a href="/purchases" class="box">
+                    <i class="fas fa-chart-bar"></i>
+                    <h3>کڕین</h3>
+                </a> -->
+            </div>
+
+            <div class="container">
+                <form id="serviceForm">
+                    <div id="form-error" class="error-message" style="display: none;"></div>
+
+                    <% if(editMode==true) { %>
+                        <input type="hidden" name="id" value="<%= service[0].id %>">
+                        <% } %>
+
+                            <!-- Barber Name -->
+                            <div class="name-group">
+                                <select name="barber_name" id="barber_name">
+                                    <% if (barbers.length> 0) { %>
+                                        <option value="">دەلاکێک هەڵبژێرە</option>
+                                        <% barbers.forEach(row=> { %>
+                                            <option value="<%= row.Id %>" <% if(editMode &&
+                                                service[0].barber_id==row.Id) { %>selected<% } %>>
+                                                    <%= row.Firstname %>
+                                                        <%= row.Lastname %>
+                                            </option>
+                                            <% }) %>
+                                                <% } else { %>
+                                                    <option value="">هیچ دەلاکێک نیە</option>
+                                                    <% } %>
+                                </select>
+                            </div>
+
+                            <!-- Services -->
+                            <div id="servicesList" class="servicesList">
+                                <% allServices.forEach(row=> { %>
+                                    <div class="form-group">
+                                        <input type="checkbox" class="serviceCheckbox" data-price="<%= row.Price %>"
+                                            value="<%= row.Id %>" name="services" <%=serviceDetails.some(detail=>
+                                        detail.Id == row.Id) ? 'checked' : '' %>
+                                        />
+                                        <span>
+                                            <%= row.Price %> - <%= row.Service %>
+                                        </span>
+                                    </div>
+                                    <% }) %>
+                            </div>
+
+                            <!-- Money Received -->
+                            <input id="customerPayment" type="number" name="customerPayment"
+                                value="<% if(editMode) { %><%= service[0].money_received %><% } %>" min="0"
+                                placeholder="پارەدان">
+
+                            <!-- Income Info -->
+                            <div class="income">
+                                <div class="info">
+                                    <label>کۆی گشتی:</label>
+                                    <span id="totalPrice">
+                                        <% if(editMode) { %>
+                                            <%= service[0].total_price %>
+                                                <% } else { %>0.00<% } %>
+                                    </span>
+                                </div>
+                                <div class="info">
+                                    <label>پارەی وەرگیراو:</label>
+                                    <span id="moneyRceived">
+                                        <% if(editMode) { %>
+                                            <%= service[0].money_received %>
+                                                <% } else { %>0.00<% } %>
+                                    </span>
+                                </div>
+                                <div class="info">
+                                    <label>داهاتی دەلاک:</label>
+                                    <span id="barberIncome">
+                                        <% if(editMode) { %>
+                                            <%= service[0].barber_income %>
+                                                <% } else { %>0.00<% } %>
+                                    </span>
+                                </div>
+                                <div class="info">
+                                    <label>adam style:</label>
+                                    <span id="employerIncome">
+                                        <% if(editMode) { %>
+                                            <%= service[0].employer_income %>
+                                                <% } else { %>0.00<% } %>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="submitButton">
+                                <% if(!editMode) { %>زیادکردن<% } else { %>نوێکردنەوە<% } %>
+                            </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- custom js link -->
+        <script src="/js/time.js"></script>
+        <script src="/js/dashboard.js"></script>
+</body>
+
+</html>

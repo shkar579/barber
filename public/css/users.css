@@ -1,0 +1,469 @@
+body {
+    background-color: #F3F4F6;
+    min-height: 100vh;
+    padding-bottom: 2rem;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    background: var(--light);
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    padding: 2rem;
+    position: relative;
+    overflow: hidden;
+}
+
+.container::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    z-index: 1;
+}
+
+h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: var(--dark);
+    font-weight: 600;
+    font-size: 1.8rem;
+}
+
+.controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    background: var(--gray-light);
+    padding: 1rem;
+    border-radius: 12px;
+}
+
+#searchInput {
+    text-align: right;
+    flex-grow: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    min-width: 200px;
+}
+
+#searchInput:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+button {
+    background: white;
+    color: var(--dark);
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+#addRowBtn {
+    background: var(--primary);
+    color: white;
+}
+
+#deleteSelectedBtn {
+    background: var(--danger);
+    color: white;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+table {
+    direction: rtl;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 1rem 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+thead {
+    background: var(--primary);
+    color: white;
+}
+
+th {
+    padding: 1rem;
+    text-align: right;
+    font-weight: 500;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 1rem;
+    text-align: right;
+    border-bottom: 1px solid var(--gray-light);
+    font-size: 0.9rem;
+}
+
+tbody tr {
+    transition: all 0.2s;
+}
+
+tbody tr:hover {
+    background-color: rgba(99, 102, 241, 0.05);
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.editBtn,
+.viewBtn,
+.deleteBtn {
+    width: 36px;
+    height: 36px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--dark);
+    border: none;
+    transition: all 0.2s;
+    box-shadow: none;
+}
+
+.editBtn:hover {
+    background: var(--primary-light);
+    color: white;
+}
+
+.viewBtn:hover {
+    background: var(--accent);
+    color: white;
+}
+
+.deleteBtn:hover {
+    background: var(--danger);
+    color: white;
+}
+
+/* Checkboxes */
+input[type="checkbox"] {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--gray);
+    border-radius: 4px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--primary);
+    border-color: var(--primary);
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✓";
+    position: absolute;
+    color: white;
+    font-size: 14px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+/* Pagination */
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.pagination button {
+    background: white;
+    border: 1px solid var(--gray-light);
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.pagination button:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+#pageInfo {
+    font-size: 0.9rem;
+    color: var(--dark);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    transition: var(--transition);
+    overflow-y: auto;
+    /* Enable vertical scrolling on the modal container */
+    padding: 20px 0;
+    /* Add some padding to ensure content isn't flush with the viewport edges */
+}
+
+.modal-content {
+    background-color: var(--light);
+    width: 90%;
+    max-width: 500px;
+    max-height: 80vh;
+    /* Set maximum height relative to viewport height */
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-lg);
+    padding: 24px;
+    position: relative;
+    animation: modalFadeIn 0.3s ease;
+    direction: rtl;
+    overflow-y: auto;
+    /* Enable vertical scrolling within the modal content */
+    margin: auto;
+    /* Center the modal when scrolling */
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.modal-content h2 {
+    color: var(--dark);
+    margin-bottom: 20px;
+    font-size: 1.5rem;
+    border-bottom: 2px solid var(--primary-light);
+    padding-bottom: 10px;
+    position: sticky;
+    /* Keep the header visible when scrolling */
+    top: 0;
+    background-color: var(--light);
+    z-index: 10;
+}
+
+.close-btn {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--gray);
+    transition: var(--transition);
+    z-index: 11;
+    /* Ensure it's above the sticky header */
+}
+
+.close-btn:hover {
+    color: var(--danger);
+}
+
+#rowForm {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+#rowForm div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#rowForm label {
+    font-weight: 500;
+    color: var(--dark);
+}
+
+#rowForm input,
+#rowForm select,
+#rowForm textarea {
+    padding: 10px 12px;
+    border: 1px solid var(--gray-300);
+    border-radius: var(--radius-sm);
+    background-color: var(--light2);
+    transition: var(--transition);
+    font-size: 14px;
+}
+
+#rowForm input:focus,
+#rowForm select:focus,
+#rowForm textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+#rowForm textarea {
+    min-height: 100px;
+    resize: vertical;
+}
+
+#saveBtn {
+    background-color: var(--primary);
+    color: var(--light);
+    border: none;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 500;
+    margin-top: 8px;
+    transition: var(--transition);
+    position: sticky;
+    /* Keep the save button visible when scrolling */
+    bottom: 0;
+    width: 100%;
+}
+
+#saveBtn:hover {
+    background-color: var(--accent);
+    transform: translateY(-2px);
+}
+
+/* For date inputs */
+input[type="date"] {
+    font-family: inherit;
+}
+
+/* For number inputs */
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Scrollbar customization for better appearance */
+.modal-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: var(--gray-100);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: var(--gray);
+}
+
+/* Add icons to buttons */
+#addRowBtn::before {
+    content: "\f067";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+#deleteSelectedBtn::before {
+    content: "\f2ed";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+#exportBtn::before {
+    content: "\f56e";
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .container {
+        margin: 1rem;
+        padding: 1.5rem;
+    }
+
+    .controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .controls button {
+        width: 100%;
+    }
+
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+    }
+
+    th,
+    td {
+        padding: 0.75rem;
+    }
+
+    .modal {
+        align-items: flex-start;
+        /* Align to top on mobile for better scrolling */
+        padding: 10px 0;
+    }
+
+    .modal-content {
+        padding: 16px;
+        width: 95%;
+        max-height: 85vh;
+        /* Slightly larger on mobile */
+    }
+
+    #saveBtn {
+        padding: 10px;
+    }
+}

@@ -1,0 +1,81 @@
+.container {
+    background: #fff;
+    padding: 20px;
+    height: 240px;
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px #FADA7A;
+}
+
+h1 {
+    text-align: center;
+}
+
+form .form_group {
+    padding-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    direction: rtl;
+}
+
+form .form_group div {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 20rem;
+    height: 20px;
+    gap: 1rem;
+}
+
+form .form_group div label {
+    font-size: 20px;
+}
+
+form .form_group div input[type="date"],
+select {
+    outline: none;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    font-size: 18px;
+}
+
+form button {
+    border: none;
+    font-size: 20px;
+    float: right;
+    margin-top: 80px;
+    background-color: #FCE7C8;
+    width: 160px;
+    height: 35px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+
+form button:hover {
+    background-color: #B1C29E;
+}
+
+.report {
+    margin-top: 160px;
+}
+
+.report .boxs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.report .boxs .box {
+    text-align: center;
+    flex: 1 1 25rem;
+    height: 120px;
+    background-color: #FFF6DA;
+    margin: 1rem;
+}
+
+.report .boxs .box span {
+    line-height: 120px;
+    font-size: 20px;
+    font-weight: 600;
+}

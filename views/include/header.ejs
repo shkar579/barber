@@ -1,0 +1,14 @@
+<div class="header">
+    <div class="nav">
+        <a class="logo" href="/admin/dashboard"><img src="/images/logo.jpeg" alt=""></a>
+        <div class="user">
+            <p id="timeDisplay"></p>
+            <i class="fa-solid fa-user"></i>
+            <% if(!isAuthenticated) { %>
+                <a href="#"></a>
+                <% }else { %> <a href="/logout">چوونەدەرەوە</a>
+                    <% } %>
+
+        </div>
+    </div>
+</div>

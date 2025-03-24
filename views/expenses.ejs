@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خەرجیەکان</title>
+    <!-- custom css link -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/users.css">
+    <!-- font awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <%- include("./include/header.ejs") %>
+        <div class="container">
+            <h1>خەرجیەکان</h1>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="فلتەرکردن">
+                <button id="exportBtn">گواستنەوە بۆ فایلی ئێکسڵ</button>
+                <button id="deleteSelectedBtn">سڕینەوە</button>
+                <button id="addRowBtn">زیادکردن</button>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>ئایدی</th>
+                        <th>جۆری خەرجی</th>
+                        <th>بڕی خەرجی</th>
+                        <th>بەروار</th>
+                        <th>تێبینی</th>
+                        <th>کردار</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% data.forEach(row=> { %>
+                        <tr>
+                            <td><input type="checkbox" class="selectRow" data-id="<%= row.Id %>"></td>
+                            <td>
+                                <%= row.Id %>
+                            </td>
+                            <td>
+                                <%= row.Category_name %>
+                            </td>
+                            <td>
+                                <%= row.Amount %>
+                            </td>
+                            <td>
+                                <%= row.Expense_date %>
+                            </td>
+                            <td>
+                                <%= row.Description %>
+                            </td>
+                            <td>
+                                <button class="editBtn" data-id="<%= row.Id %>"><i
+                                        class="fa-solid fa-pen-to-square"></i></button>
+                                <!-- <button class="viewBtn" data-id="<%= row.Id %>"><i class="fa-solid fa-eye"></i></button> -->
+                                <!-- <button id="deleteBtn" data-id="<%= row.Id %>"><i class="fa-solid fa-trash"></i></button> -->
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button id="prevPage">پێشتر</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">دواتر</button>
+            </div>
+
+        </div>
+
+
+        <!-- Modal for Add/Edit Row -->
+        <div id="rowFormModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle">Add Row</h2>
+                <form id="rowForm">
+                    <input type="hidden" id="rowId" name="rowId" />
+                    <div>
+                        <select id="category" name="category_id" >
+                            <option value="" disabled selected>جۆرێک هەڵبژێرە</option>
+                            <% data2.forEach(row=> { %>
+                                <option value="<%= row.id %>">
+                                    <%= row.Category_name %>
+                                </option>
+                                <% }) %>
+                                    <!-- Categories will be dynamically populated -->
+                        </select>
+                    </div>
+                    <div>
+                        <label for="amount">بڕی خەرجی</label>
+                        <input type="number" id="amount" name="amount" min="0" required />
+                    </div>
+                    <div>
+                        <label for="expense_date">بەروار</label>
+                        <input type="date" id="expense_date" name="expense_date" required />
+                    </div>
+                    <div>
+                        <label for="description">تێبینی</label>
+                        <textarea id="description" name="description" placeholder="تێبینی"></textarea>
+                    </div>
+                    <button type="submit" id="saveBtn">پاراستن</button>
+                </form>
+            </div>
+        </div>
+        <!-- custom js link -->
+        <script src="/js/time.js"></script>
+        <script src="/js/expenses.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>خەرجیەکان</title>
+    <!-- custom css link -->
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/users.css">
+    <!-- font awesome link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+</head>
+
+<body>
+    <%- include("./include/header.ejs") %>
+        <div class="container">
+            <h1>خەرجیەکان</h1>
+            <div class="controls">
+                <input type="text" id="searchInput" placeholder="فلتەرکردن">
+                <button id="exportBtn">گواستنەوە بۆ فایلی ئێکسڵ</button>
+                <button id="deleteSelectedBtn">سڕینەوە</button>
+                <button id="addRowBtn">زیادکردن</button>
+            </div>
+
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>ئایدی</th>
+                        <th>ناو</th>
+                        <th>کردار</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <% data.forEach(row=> { %>
+                        <tr>
+                            <td><input type="checkbox" class="selectRow" data-id="<%= row.category_id %>"></td>
+                            <td>
+                                <%= row.category_id %>
+                            </td>
+                            <td>
+                                <%= row.name %>
+                            </td>
+                            <td>
+                                <button class="editBtn" data-id="<%= row.category_id %>"><i
+                                        class="fa-solid fa-pen-to-square"></i></button>
+                            </td>
+                        </tr>
+                        <% }) %>
+                </tbody>
+            </table>
+
+            <div class="pagination">
+                <button id="prevPage">پێشتر</button>
+                <span id="pageInfo"></span>
+                <button id="nextPage">دواتر</button>
+            </div>
+
+        </div>
+
+
+        <!-- Modal for Add/Edit Row -->
+        <div id="rowFormModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modalTitle">زیادکردن</h2>
+                <form id="rowForm">
+                    <input type="hidden" id="rowId" name="rowId" />
+                    <div>
+                        <label for="name">ناو</label>
+                        <input type="text" id="name" name="name" required />
+                    </div>
+                    <button type="submit" id="saveBtn">پاراستن</button>
+                </form>
+            </div>
+        </div>
+        <!-- custom js link -->
+        <script src="/js/time.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const rowsPerPage = 5;
+                let currentPage = 1;
+
+                // Elements
+                const searchInput = document.getElementById("searchInput");
+                const tableBody = document.querySelector("#dataTable tbody");
+                const pageInfo = document.getElementById("pageInfo");
+                const prevPage = document.getElementById("prevPage");
+                const nextPage = document.getElementById("nextPage");
+                const addRowBtn = document.getElementById("addRowBtn");
+                const selectAllCheckbox = document.getElementById("selectAll");
+                const deleteSelectedBtn = document.getElementById("deleteSelectedBtn");
+                // const deleteBtn = document.querySelector(".deleteBtn");
+                const exportBtn = document.getElementById("exportBtn");
+
+
+                // Initialize table rows for pagination
+                let tableRows = Array.from(tableBody.querySelectorAll("tr"));
+
+                const updatePagination = () => {
+                    const start = (currentPage - 1) * rowsPerPage;
+                    const end = start + rowsPerPage;
+
+                    tableRows.forEach((row, index) => {
+                        row.style.display = index >= start && index < end ? "" : "none";
+                    });
+
+                    pageInfo.textContent = `Page ${currentPage} of ${Math.ceil(tableRows.length / rowsPerPage)}`;
+                };
+
+                // Pagination logic
+                prevPage.addEventListener("click", () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        updatePagination();
+                    }
+                });
+
+                nextPage.addEventListener("click", () => {
+                    if (currentPage < Math.ceil(tableRows.length / rowsPerPage)) {
+                        currentPage++;
+                        updatePagination();
+                    }
+                });
+
+                const modal = document.getElementById("rowFormModal");
+                const closeBtn = document.querySelector(".close-btn");
+                const rowForm = document.getElementById("rowForm");
+                const modalTitle = document.getElementById("modalTitle");
+
+                // Add Button Click Handler
+                document.getElementById("addRowBtn").addEventListener("click", () => {
+                    modalTitle.textContent = "زیادکردن";
+                    rowForm.reset(); // Clear the form
+                    document.getElementById("rowId").value = ""; // Clear row ID for new entry
+                    modal.style.display = "block";
+                });
+
+                // Edit Button Click Handler (Event Delegation)
+
+                let editBtns = document.querySelectorAll(".editBtn");
+                editBtns.forEach(editBtn => {
+                    editBtn.addEventListener("click", (e) => {
+                        const rowId = editBtn.attributes[1].textContent // Get the row ID
+                        modalTitle.textContent = "نوێکردنەوە";
+                        modal.style.display = "block";
+
+                        // Fetch row details and populate the form
+                        fetch(`/admin/Detailcategory/${rowId}`)
+                            .then((response) => response.json())
+                            .then((data) => {
+                                document.getElementById("rowId").value = data.category_id;
+                                document.getElementById("name").value = data.name;
+                            })
+                            .catch((err) => console.error("Error fetching row details:", err));
+                    });
+                })
+
+
+                // Form Submit Handler
+                rowForm.addEventListener("submit", async (e) => {
+                    e.preventDefault();
+
+                    const rowId = document.getElementById("rowId").value;
+                    const formData = {
+                        name: document.getElementById("name").value,
+                    };
+
+                    const method = rowId ? "PUT" : "POST"; // PUT for edit, POST for add
+                    const url = rowId ? `/admin/Editcategory/${rowId}` : "/admin/Addcategory";
+
+                    try {
+                        const response = await fetch(url, {
+                            method,
+                            headers: {
+                                "Content-Type": "application/json",
+                            },
+                            body: JSON.stringify(formData),
+                        });
+
+                        if (response.ok) {
+                            alert(rowId ? "بەسەرکەوتووی نوێکرایەوە!" : "بەسەرکوتووی زیادکرا");
+                            modal.style.display = "none";
+                            location.reload(); // Reload the table
+                        } else {
+                            alert("Failed to save row.");
+                        }
+                    } catch (error) {
+                        console.error("Error saving row:", error);
+                    }
+                });
+
+                // Close Modal
+                closeBtn.addEventListener("click", () => {
+                    modal.style.display = "none";
+                });
+
+                window.addEventListener("click", (e) => {
+                    if (e.target === modal) {
+                        modal.style.display = "none";
+                    }
+                });
+
+
+                // Select/Deselect All
+                selectAllCheckbox.addEventListener("change", () => {
+                    document.querySelectorAll(".selectRow").forEach(checkbox => {
+                        checkbox.checked = selectAllCheckbox.checked;
+                    });
+                });
+
+                // Delete Selected Rows
+                deleteSelectedBtn.addEventListener("click", async () => {
+                    const selectedIds = Array.from(document.querySelectorAll(".selectRow:checked"))
+                        .map(checkbox => checkbox.dataset.id);
+
+                    if (selectedIds.length > 0) {
+                        const confirmation = confirm("دڵنیایت لەوەی ئەتەوێت بیسڕیەوە?");
+                        if (confirmation) {
+                            await fetch("/admin/Deletecategory", {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify({ ids: selectedIds }),
+                            });
+                            location.reload();
+                        }
+                    }
+                });
+
+
+                // Export to Excel
+                exportBtn.addEventListener("click", () => {
+                    window.location.href = "/admin/Exportcategory"; // Trigger Excel export
+                });
+
+                // Search Filter
+                searchInput.addEventListener("input", () => {
+                    const filter = searchInput.value.toLowerCase();
+
+                    tableRows.forEach((row) => {
+                        const rowText = row.textContent.toLowerCase();
+                        row.style.display = rowText.includes(filter) ? "" : "none";
+                    });
+
+                    // Update pagination after filtering
+                    tableRows = Array.from(tableBody.querySelectorAll("tr")).filter(
+                        (row) => row.style.display !== "none"
+                    );
+                    currentPage = 1; // Reset to first page
+                    updatePagination();
+                });
+
+                // Initialize Pagination
+                updatePagination();
+            });
+
+
+        </script>
+</body>
+
+</html>
